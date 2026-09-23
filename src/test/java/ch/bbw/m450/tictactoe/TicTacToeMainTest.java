@@ -5,6 +5,7 @@ import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
@@ -24,7 +25,7 @@ public class TicTacToeMainTest implements WithAssertions {
 		return board;
 	}
 
-	// --- Helper-Assertion: liesbari Assertion für "wer gwinnt" ---
+	// --- Helper-Assertion: lesbari Assertion für "wer gwinnt" ---
 	private void assertWinner(Stone[] board, Stone winner) {
 		assertThat(TicTacToeMain.isWin(board, winner)).isTrue();
 	}
@@ -40,35 +41,35 @@ public class TicTacToeMainTest implements WithAssertions {
 		assertWinner(board, Stone.CROSS);
 	}
 
-	private static Stream<Stone[]> winningBoardsForX() {
+	private static Stream<Arguments> winningBoardsForX() {
 		return Stream.of(
-				boardFrom("XXX OO. ..."),   // Reihe oben
-				boardFrom("OO. XXX ..."),   // Reihe mitti
-				boardFrom("OO. ... XXX"),   // Reihe unte
-				boardFrom("X.. X.. X.."),   // Spalte links
-				boardFrom(".X. .X. .X."),   // Spalte mitti
-				boardFrom("..X ..X ..X"),   // Spalte rechts
-				boardFrom("X.. .X. ..X"),   // Diagonale \
-				boardFrom("..X .X. X..")    // Diagonale /
+				Arguments.of((Object) boardFrom("XXX OO. ...")),   // Reihe oben
+				Arguments.of((Object) boardFrom("OO. XXX ...")),   // Reihe mitti
+				Arguments.of((Object) boardFrom("OO. ... XXX")),   // Reihe unte
+				Arguments.of((Object) boardFrom("X.. X.. X..")),   // Spalte links
+				Arguments.of((Object) boardFrom(".X. .X. .X.")),   // Spalte mitti
+				Arguments.of((Object) boardFrom("..X ..X ..X")),   // Spalte rechts
+				Arguments.of((Object) boardFrom("X.. .X. ..X")),   // Diagonale \
+				Arguments.of((Object) boardFrom("..X .X. X.."))    // Diagonale /
 		);
 	}
 
-	// --- S'gliche für O ---
+	// --- das gliche für O ---
 	@ParameterizedTest
 	@MethodSource("winningBoardsForO")
 	void detectsWinsForO(Stone[] board) {
 		assertWinner(board, Stone.CIRCLE);
 	}
 
-	private static Stream<Stone[]> winningBoardsForO() {
+	private static Stream<Arguments> winningBoardsForO() {
 		return Stream.of(
-				boardFrom("OOO XX. ..."),
-				boardFrom("O.. O.. O.."),
-				boardFrom("O.. .O. ..O")
+				Arguments.of((Object) boardFrom("OOO XX. ...")),
+				Arguments.of((Object) boardFrom("O.. O.. O..")),
+				Arguments.of((Object) boardFrom("O.. .O. ..O"))
 		);
 	}
 
-	// --- Kein Gwinner: leers Board, unentschiede Muster ---
+	// --- Kein Gwinner: leerss Board, unentschiede Muster ---
 	@ParameterizedTest
 	@MethodSource("nonWinningBoards")
 	void detectsNoWinner(Stone[] board) {
@@ -76,11 +77,11 @@ public class TicTacToeMainTest implements WithAssertions {
 		assertNoWinner(board, Stone.CIRCLE);
 	}
 
-	private static Stream<Stone[]> nonWinningBoards() {
+	private static Stream<Arguments> nonWinningBoards() {
 		return Stream.of(
-				boardFrom("... ... ..."),   // leers Board
-				boardFrom("XOX OXO OXO"),   // Draw ohni Gwinner
-				boardFrom("XO. OX. ...")    // no offe, kei Reihe voll
+				Arguments.of((Object) boardFrom("... ... ...")),   // leeres Board
+				Arguments.of((Object) boardFrom("XOX OXO OXO")),   // Draw ohni Gwinner
+				Arguments.of((Object) boardFrom("XO. OX. ..."))    // no offe, kei Reihe voll
 		);
 	}
 }
