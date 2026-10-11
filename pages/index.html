@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>TicTacTest Coverage</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; }
+    canvas { border: 1px solid #ccc; max-width: 100%; }
+  </style>
+</head>
+<body>
+  <h1>TicTacTest: Branch Coverage auf main</h1>
+  <p id="latest">Lade Daten ...</p>
+  <canvas id="chart" width="800" height="360"></canvas>
+  <script>
+    fetch('coverage.csv')
+      .then(response => response.text())
+      .then(text => {
+        const rows = text.trim().split('\n').slice(1)
+          .map(line => line.split(','))
+          .map(([date, commit, coverage]) => ({ date, commit, coverage: parseFloat(coverage) }))
+          .filter(row => !Number.isNaN(row.coverage));
+        draw(rows);
+      });
+
+    function draw(rows) {
+      const latest = document.getElementById('latest');
+      if (rows.length === 0) {
+        latest.textContent = 'Noch keine Daten.';
+        return;
+      }
+      const last = rows[rows.length - 1];
+      latest.textContent = `Aktuell: ${last.coverage} % (Commit ${last.commit}, ${last.date})`;
+
+      const canvas = document.getElementById('chart');
+      const ctx = canvas.getContext('2d');
+      const pad = { left: 50, right: 20, top: 20, bottom: 50 };
+      const w = canvas.width - pad.left - pad.right;
+      const h = canvas.height - pad.top - pad.bottom;
+      const x = i => pad.left + (rows.length === 1 ? w / 2 : (i * w) / (rows.length - 1));
+      const y = v => pad.top + h - (v / 100) * h;
+
+      ctx.font = '12px sans-serif';
+      ctx.lineWidth = 1;
+      for (let v = 0; v <= 100; v += 20) {
+        ctx.strokeStyle = '#ddd';
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y(v));
+        ctx.lineTo(pad.left + w, y(v));
+        ctx.stroke();
+        ctx.fillStyle = '#333';
+        ctx.fillText(`${v} %`, 8, y(v) + 4);
+      }
+
+      ctx.strokeStyle = '#1f77b4';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      rows.forEach((row, i) => (i === 0 ? ctx.moveTo(x(i), y(row.coverage)) : ctx.lineTo(x(i), y(row.coverage))));
+      ctx.stroke();
+
+      const step = Math.ceil(rows.length / 12);
+      rows.forEach((row, i) => {
+        ctx.fillStyle = '#1f77b4';
+        ctx.beginPath();
+        ctx.arc(x(i), y(row.coverage), 4, 0, 2 * Math.PI);
+        ctx.fill();
+        if (i % step === 0) {
+          ctx.fillStyle = '#333';
+          ctx.fillText(row.commit, x(i) - 18, pad.top + h + 20);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
