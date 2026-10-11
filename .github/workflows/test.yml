@@ -28,6 +28,9 @@ jobs:
       - name: Run tests
         run: ./gradlew test
 
+      - name: Run mutation tests
+        run: ./gradlew pitest 
+
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
