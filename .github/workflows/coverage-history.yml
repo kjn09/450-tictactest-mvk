@@ -1,0 +1,60 @@
+name: Coverage History
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  coverage-history:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Read branch coverage
+        id: coverage
+        run: echo "value=$(python3 .github/scripts/branch_coverage.py build/reports/jacoco/test/jacocoTestReport.xml)" >> "$GITHUB_OUTPUT"
+
+      - name: Build site with history
+        run: |
+          mkdir site
+          curl -fsSL "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/coverage.csv?nocache=$(date +%s)" -o site/coverage.csv || echo "Datum,Commit,Coverage" > site/coverage.csv
+          echo "$(date +%F),${GITHUB_SHA::7},${{ steps.coverage.outputs.value }}" >> site/coverage.csv
+          cp pages/index.html site/index.html
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
