@@ -4,26 +4,12 @@ import ch.bbw.m450.tictactoe.TicTacToePlayer.Stone;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.params.provider.Arguments;
+import static ch.bbw.m450.tictactoe.TestBoards.boardFrom;
 
 import java.util.stream.Stream;
 
-public class TicTacToeMainTest implements WithAssertions {
-
-	// --- Helper: baut ein Stone[]-Board aus lesbarem String-Layout ---
-	private static Stone[] boardFrom(String layout) {
-		var chars = layout.replace(" ", "").toCharArray();
-		var board = new Stone[9];
-		for (int i = 0; i < chars.length; i++) {
-			board[i] = switch (chars[i]) {
-				case 'X' -> Stone.CROSS;
-				case 'O' -> Stone.CIRCLE;
-				default -> null;
-			};
-		}
-		return board;
-	}
+class TicTacToeMainTest implements WithAssertions {
 
 	// --- Helper-Assertion: lesbari Assertion für "wer gwinnt" ---
 	private void assertWinner(Stone[] board, Stone winner) {
