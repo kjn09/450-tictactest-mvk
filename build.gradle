@@ -15,6 +15,7 @@ test {
 
 jacocoTestReport { 
 	dependsOn test
+	finalizedBy jacocoTestCoverageVerification
 	reports {
 		html.required = true
 		xml.required = true
