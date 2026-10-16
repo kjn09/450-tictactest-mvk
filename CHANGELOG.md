@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.1 - 2026-10-16
+
+### Added
+- Keine
+
+### Changed
+- Keine
+
+### Fixed
+- Eingabe über Pipe oder Datei: Das Spiel bricht nach dem ersten Zug nicht mehr mit `NoSuchElementException` ab, weil `HumanPlayer` für alle Züge denselben `Scanner` verwendet
+
 ## 1.0.0 - 2026-10-16
 
 ### Added
