@@ -4,6 +4,17 @@ plugins {
 	id 'info.solidsoft.pitest' version '1.19.0-rc.3'
 }
 
+if (version == 'unspecified') {
+	version = '0.0.0-dev'
+}
+
+jar {
+	archiveBaseName = 'tictactest'
+	manifest {
+		attributes 'Main-Class': 'ch.bbw.m450.tictactoe.TicTacToeMain'
+	}
+}
+
 repositories {
 	mavenCentral()
 }
