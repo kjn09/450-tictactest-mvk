@@ -78,7 +78,7 @@ Gemessene Coverage (JaCoCo, 2026-10-09):
 - **Sprache und Build:** Java, Gradle (Wrapper, Gradle 9.7.0)
 - **Testframeworks:** JUnit Jupiter 6.1.3 (inklusive Parameterized Tests), AssertJ 3.27.7, `junit-platform-launcher` zur Laufzeit
 - **Coverage:** JaCoCo-Gradle-Plugin, Reports als HTML und XML unter `build/reports/jacoco/test/`
-- **CI:** GitHub Actions, Workflow `.github/workflows/test.yml`, `ubuntu-latest`, Temurin JDK 21
+- **CI:** GitHub Actions, Workflow `.github/workflows/test.yml`, `ubuntu-24.04`, Temurin JDK 21
   - Trigger: Push auf jeden Branch, Pull Request auf `main`
   - Schritte: Checkout, JDK einrichten, Gradle einrichten, Build (`./gradlew assemble`), Tests (`./gradlew test`), Upload von `build/reports` als Artifact `build-reports`
 - **Lokal:** Windows, VS Code, Gradle Wrapper
