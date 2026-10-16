@@ -5,6 +5,8 @@ import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.StdIo;
 import org.junitpioneer.jupiter.StdOut;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 
 class HumanPlayerTest implements WithAssertions {
 
@@ -30,5 +32,18 @@ class HumanPlayerTest implements WithAssertions {
 		var board = new Stone[9];
 		assertThatThrownBy(() -> player.play(board, Stone.CROSS))
 				.isInstanceOf(NumberFormatException.class);
+	}
+
+    @Test
+	void readsSeveralMovesFromTheSameInput() {
+		var originalIn = System.in;
+		try {
+			System.setIn(new ByteArrayInputStream("4\n2\n".getBytes(StandardCharsets.UTF_8)));
+			var board = new Stone[9];
+			assertThat(player.play(board, Stone.CROSS)).isEqualTo(4);
+			assertThat(player.play(board, Stone.CROSS)).isEqualTo(2);
+		} finally {
+			System.setIn(originalIn);
+		}
 	}
 }
