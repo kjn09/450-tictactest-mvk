@@ -20,8 +20,25 @@ repositories {
 }
 
 test {
-	useJUnitPlatform()
+	useJUnitPlatform {
+		excludeTags 'e2e'
+	}
 	finalizedBy jacocoTestReport
+}
+
+tasks.register('e2eTest', Test) {
+	description = 'Runs the end-to-end tests (tag e2e)'
+	group = 'verification'
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	useJUnitPlatform {
+		includeTags 'e2e'
+	}
+	shouldRunAfter test
+}
+
+check {
+	dependsOn e2eTest
 }
 
 jacocoTestReport { 
@@ -50,6 +67,7 @@ pitest {
 	targetClasses = ['ch.bbw.m450.tictactoe.*']
 	outputFormats = ['HTML', 'XML']
 	timestampedReports = false
+	excludedGroups = ['e2e']
 }
 
 dependencies {
