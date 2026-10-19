@@ -2,6 +2,7 @@ package ch.bbw.m450.tictactoe.e2e;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import ch.bbw.m450.tictactoe.TestInput;
 import ch.bbw.m450.tictactoe.TicTacToeMain;
 import ch.bbw.m450.tictactoe.TicTacToePlayer.Stone;
 import ch.bbw.m450.tictactoe.players.MinimaxPlayer;
@@ -22,16 +23,10 @@ class DenialOfServiceE2ETest implements WithAssertions {
 	@StdIo
 	@Timeout(value = 10, unit = SECONDS)
 	void rejectsAnEnormousInputLineInReasonableTime(StdOut out) {
-		var pioneerIn = System.in;
-		try {
-			var hugeLine = "9".repeat(5_000_000) + "\n";
-			System.setIn(new ByteArrayInputStream(hugeLine.getBytes(StandardCharsets.UTF_8)));
-
+		try (var ignored = TestInput.with("9".repeat(5_000_000) + "\n")) {
 			assertThatThrownBy(() -> TicTacToeMain.main(new String[0]))
 					.isInstanceOf(NumberFormatException.class);
 			assertThat(out.capturedLines()).isNotEmpty();
-		} finally {
-			System.setIn(pioneerIn);
 		}
 	}
 
@@ -45,15 +40,10 @@ class DenialOfServiceE2ETest implements WithAssertions {
 	@StdIo
 	@Timeout(value = 5, unit = SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
 	void gameWithoutAnyInputEndsInsteadOfWaiting(StdOut out) {
-		var pioneerIn = System.in;
-		try {
-			System.setIn(new ByteArrayInputStream(new byte[0]));
-
+		try (var ignored = TestInput.with("")) {
 			assertThatThrownBy(() -> TicTacToeMain.main(new String[0]))
 					.isInstanceOf(NoSuchElementException.class);
 			assertThat(out.capturedLines()).isNotEmpty();
-		} finally {
-			System.setIn(pioneerIn);
 		}
 	}
 }

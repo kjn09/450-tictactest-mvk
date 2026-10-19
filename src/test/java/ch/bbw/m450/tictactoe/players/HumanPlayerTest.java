@@ -1,12 +1,11 @@
 package ch.bbw.m450.tictactoe.players;
 
+import ch.bbw.m450.tictactoe.TestInput;
 import ch.bbw.m450.tictactoe.TicTacToePlayer.Stone;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.StdIo;
 import org.junitpioneer.jupiter.StdOut;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 
 class HumanPlayerTest implements WithAssertions {
 
@@ -34,16 +33,12 @@ class HumanPlayerTest implements WithAssertions {
 				.isInstanceOf(NumberFormatException.class);
 	}
 
-    @Test
+	@Test
 	void readsSeveralMovesFromTheSameInput() {
-		var originalIn = System.in;
-		try {
-			System.setIn(new ByteArrayInputStream("4\n2\n".getBytes(StandardCharsets.UTF_8)));
+		try (var ignored = TestInput.with("4\n2\n")) {
 			var board = new Stone[9];
 			assertThat(player.play(board, Stone.CROSS)).isEqualTo(4);
 			assertThat(player.play(board, Stone.CROSS)).isEqualTo(2);
-		} finally {
-			System.setIn(originalIn);
 		}
 	}
 }
