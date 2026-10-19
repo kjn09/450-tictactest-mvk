@@ -11,6 +11,7 @@ public class HumanPlayer implements TicTacToePlayer {
 	private Scanner scanner;
 
 	@Override
+	@SuppressWarnings("java:S106") 
 	public int play(Stone[] board, Stone colorToPlay) {
 		System.out.println(TicTacToeMain.toString(board) + "where to to put the next " + colorToPlay + "? (0-8): ");
 		if (scanner == null) {
