@@ -35,7 +35,8 @@ class HumanPlayerTest implements WithAssertions {
 
 	@Test
 	void readsSeveralMovesFromTheSameInput() {
-		try (var ignored = TestInput.with("4\n2\n")) {
+		var input = TestInput.with("4\n2\n");
+		try (input) {
 			var board = new Stone[9];
 			assertThat(player.play(board, Stone.CROSS)).isEqualTo(4);
 			assertThat(player.play(board, Stone.CROSS)).isEqualTo(2);

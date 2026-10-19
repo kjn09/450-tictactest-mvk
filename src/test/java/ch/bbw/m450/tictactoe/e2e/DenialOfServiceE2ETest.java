@@ -6,8 +6,6 @@ import ch.bbw.m450.tictactoe.TestInput;
 import ch.bbw.m450.tictactoe.TicTacToeMain;
 import ch.bbw.m450.tictactoe.TicTacToePlayer.Stone;
 import ch.bbw.m450.tictactoe.players.MinimaxPlayer;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.NoSuchElementException;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Tag;
@@ -23,7 +21,8 @@ class DenialOfServiceE2ETest implements WithAssertions {
 	@StdIo
 	@Timeout(value = 10, unit = SECONDS)
 	void rejectsAnEnormousInputLineInReasonableTime(StdOut out) {
-		try (var ignored = TestInput.with("9".repeat(5_000_000) + "\n")) {
+		var input = TestInput.with("9".repeat(5_000_000) + "\n");
+		try (input) {
 			assertThatThrownBy(() -> TicTacToeMain.main(new String[0]))
 					.isInstanceOf(NumberFormatException.class);
 			assertThat(out.capturedLines()).isNotEmpty();
@@ -40,7 +39,8 @@ class DenialOfServiceE2ETest implements WithAssertions {
 	@StdIo
 	@Timeout(value = 5, unit = SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
 	void gameWithoutAnyInputEndsInsteadOfWaiting(StdOut out) {
-		try (var ignored = TestInput.with("")) {
+		var input = TestInput.with("");
+		try (input) {
 			assertThatThrownBy(() -> TicTacToeMain.main(new String[0]))
 					.isInstanceOf(NoSuchElementException.class);
 			assertThat(out.capturedLines()).isNotEmpty();
