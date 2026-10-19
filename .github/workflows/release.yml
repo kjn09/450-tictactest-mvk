@@ -35,6 +35,9 @@ jobs:
       - name: Run tests
         run: ./gradlew test
 
+      - name: Run end-to-end tests
+        run: ./gradlew e2eTest
+
       - name: Build executable JAR
         run: ./gradlew jar "-Pversion=$VERSION"
 
@@ -54,3 +57,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "$GITHUB_REF_NAME" "build/libs/tictactest-$VERSION.jar" --title "TicTacTest $GITHUB_REF_NAME" --notes-file release-notes.md
+

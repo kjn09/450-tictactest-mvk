@@ -37,3 +37,6 @@ jobs:
         with:
           name: build-reports
           path: build/reports
+
+      - name: Run end-to-end tests
+        run: ./gradlew e2eTest
