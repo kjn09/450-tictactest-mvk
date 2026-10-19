@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junitpioneer.jupiter.StdIo;
+import org.junitpioneer.jupiter.StdOut;
 
 @Tag("e2e")
 class DenialOfServiceE2ETest implements WithAssertions {
@@ -20,7 +21,7 @@ class DenialOfServiceE2ETest implements WithAssertions {
 	@Test
 	@StdIo
 	@Timeout(value = 10, unit = SECONDS)
-	void rejectsAnEnormousInputLineInReasonableTime() {
+	void rejectsAnEnormousInputLineInReasonableTime(StdOut out) {
 		var pioneerIn = System.in;
 		try {
 			var hugeLine = "9".repeat(5_000_000) + "\n";
@@ -28,6 +29,7 @@ class DenialOfServiceE2ETest implements WithAssertions {
 
 			assertThatThrownBy(() -> TicTacToeMain.main(new String[0]))
 					.isInstanceOf(NumberFormatException.class);
+			assertThat(out.capturedLines()).isNotEmpty();
 		} finally {
 			System.setIn(pioneerIn);
 		}
@@ -42,8 +44,16 @@ class DenialOfServiceE2ETest implements WithAssertions {
 	@Test
 	@StdIo
 	@Timeout(value = 5, unit = SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
-	void gameWithoutAnyInputEndsInsteadOfWaiting() {
-		assertThatThrownBy(() -> TicTacToeMain.main(new String[0]))
-				.isInstanceOf(NoSuchElementException.class);
+	void gameWithoutAnyInputEndsInsteadOfWaiting(StdOut out) {
+		var pioneerIn = System.in;
+		try {
+			System.setIn(new ByteArrayInputStream(new byte[0]));
+
+			assertThatThrownBy(() -> TicTacToeMain.main(new String[0]))
+					.isInstanceOf(NoSuchElementException.class);
+			assertThat(out.capturedLines()).isNotEmpty();
+		} finally {
+			System.setIn(pioneerIn);
+		}
 	}
 }
