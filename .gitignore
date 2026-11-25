@@ -30,3 +30,6 @@ crash.log
 # Keys
 *.pem
 tictactest-aws*
+
+# Provider lock file must be tracked
+!.terraform.lock.hcl
