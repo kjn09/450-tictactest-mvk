@@ -19,3 +19,17 @@ yarn-error.log*
 *.received.*
 
 bin/
+# OpenTofu / Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfplan
+crash.log
+
+# Keys
+*.pem
+tictactest-aws*
+
+# Provider lock file must be tracked
+!.terraform.lock.hcl
